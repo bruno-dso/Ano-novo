@@ -10,8 +10,7 @@ const clientId =
         .toString(16)
         .substring(2, 10);
 
-const client = mqtt.connect(
-    "ws://broker.emqx.io:8083/mqtt",
+const client = mqtt.connect("wss://broker.emqx.io:8084/mqtt",
     {
         clientId: clientId,
         clean: true,

@@ -189,3 +189,38 @@ document
         }
 
     });
+
+
+    document
+    .getElementById("testarNotificacao")
+    .addEventListener("click", async () => {
+
+        try {
+
+            const resposta = await fetch("/api/notify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const dados = await resposta.json();
+
+            console.log(dados);
+
+            if (resposta.ok) {
+                alert("🔔 Notificação enviada!");
+            } else {
+                alert("Erro: " + dados.error);
+            }
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao testar notificação:",
+                erro
+            );
+
+            alert("Erro ao enviar notificação.");
+        }
+    });

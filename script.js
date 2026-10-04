@@ -95,3 +95,37 @@ function responder(resposta) {
         "Resposta enviada: " +
         resposta;
 }
+
+client.on("connect", () => {
+    console.log("MQTT conectado!");
+
+    conexao.textContent = "🟢 Conectado";
+
+    client.subscribe(TOPICO_ACIONADA, (erro) => {
+        if (erro) {
+            console.error("Erro ao se inscrever:", erro);
+        } else {
+            console.log("Inscrito em:", TOPICO_ACIONADA);
+        }
+    });
+});
+
+client.on("reconnect", () => {
+    console.log("Tentando reconectar...");
+    conexao.textContent = "🟡 Reconectando...";
+});
+
+client.on("offline", () => {
+    console.log("MQTT offline");
+    conexao.textContent = "🟠 Offline";
+});
+
+client.on("close", () => {
+    console.log("MQTT desconectado");
+    conexao.textContent = "🔴 Desconectado";
+});
+
+client.on("error", (erro) => {
+    console.error("Erro MQTT:", erro);
+    conexao.textContent = "🔴 Erro na conexão";
+});

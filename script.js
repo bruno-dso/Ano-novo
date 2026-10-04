@@ -24,6 +24,7 @@ const mensagem =
 const conexao =
     document.getElementById("conexao");
 
+const VAPID_PUBLIC_KEY = "BNsF6UdLxMSDDlWzvuYhsp7Xm083i6Y5RrzXnhfuzyWl4UojivS8hvf5gafbo_1KJk2ylJCRqEBHhGWihlGOHy4";
 
 client.on("connect", () => {
 
@@ -96,3 +97,95 @@ function responder(resposta) {
         resposta;
 }
 
+function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
+
+    const base64 = (base64String + padding)
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+    const rawData = atob(base64);
+
+    return Uint8Array.from(
+        [...rawData].map(char => char.charCodeAt(0))
+    );
+}
+
+document
+    .getElementById("ativarNotificacoes")
+    .addEventListener("click", async () => {
+
+        try {
+
+            const permission =
+                await Notification.requestPermission();
+
+            if (permission !== "granted") {
+                alert("As notificações foram recusadas.");
+                return;
+            }
+
+            const registration =
+                await navigator.serviceWorker.ready;
+
+            let subscription =
+                await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+
+                subscription =
+                    await registration.pushManager.subscribe({
+
+                        userVisibleOnly: true,
+
+                        applicationServerKey:
+                            urlBase64ToUint8Array(
+                                VAPID_PUBLIC_KEY
+                            )
+                    });
+            }
+
+            console.log(
+                "Push Subscription:",
+                subscription
+            );
+
+            const resposta = await fetch(
+                "/api/subscribe",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(
+                        subscription
+                    )
+                }
+            );
+
+            if (resposta.ok) {
+
+                alert(
+                    "🔔 Notificações ativadas!"
+                );
+
+            } else {
+
+                alert(
+                    "Erro ao registrar notificações."
+                );
+            }
+
+        } catch (erro) {
+
+            console.error(
+                "Erro Push:",
+                erro
+            );
+
+        }
+
+    });

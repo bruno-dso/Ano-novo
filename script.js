@@ -24,7 +24,7 @@ const mensagem =
 const conexao =
     document.getElementById("conexao");
 
-const VAPID_PUBLIC_KEY = "BNsF6UdLxMSDDlWzvuYhsp7Xm083i6Y5RrzXnhfuzyWl4UojivS8hvf5gafbo_1KJk2ylJCRqEBHhGWihlGOHy4";
+const VAPID_PUBLIC_KEY = "BEa6Xf27Jl9t7SnQM1LxvXi3VFoU1NI360r1Hd1LDV-yFvprowzLASAyq93xRPDE7jyuhywLFI1bDNNMfaShI2Q";
 
 client.on("connect", () => {
 
